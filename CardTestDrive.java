@@ -12,6 +12,7 @@ public class CardTestDrive {
 			for(char j : cards) {
 				test_card1 = new Card(i);
 				test_card2 = new Card(j);
+				System.out.print(test_card1 + " attacks " + test_card2);
 				result = test_card1.attack(test_card2);
 				switch(result) {
 					case 'w':

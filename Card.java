@@ -50,7 +50,6 @@ public class Card {
 	}
 	
 	public char attack(Card opponent) {
-		System.out.print(name + " attacks " + opponent.getName());
 		switch(id) {
 			case 'C':
 				if(opponent.getId() == 'C') {
@@ -65,7 +64,6 @@ public class Card {
 					return 'w';
 				}
 			case 'S':
-				System.out.print("  Error: Can't attack with shield card");
 				return 'e';
 			default:
 				switch(opponent.getId()) {
