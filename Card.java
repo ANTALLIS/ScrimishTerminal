@@ -9,9 +9,10 @@ public class Card {
 	}
 	
 	public void setId(char set_id) {
+		id = set_id;
 		switch(set_id) {
 			case '1':
-				name = "Dagger"
+				name = "Dagger";
 				break;
 			case '2':
 				name = "Sword";
@@ -47,4 +48,45 @@ public class Card {
 	public String getName() {
 		return name;
 	}
-}
+	
+	public char attack(Card opponent) {
+		System.out.print(name + " attacks " + opponent.getName());
+		switch(id) {
+			case 'C':
+				if(opponent.getId() == 'C') {
+					return 'W';
+				} else {
+					return 'L';
+				}
+			case 'A':
+				if(opponent.getId() == 'S') {
+					return 'r';
+				} else {
+					return 'w';
+				}
+			case 'S':
+				System.out.print("  Error: Can't attack with shield card");
+				return 'e';
+			default:
+				switch(opponent.getId()) {
+					case 'S':
+						return 'd';
+					case 'C':
+						return 'W';
+					case 'A':
+						return 'w';
+					default:
+						int op_id = ((int)opponent.getId()) - 48;
+						int my_id = ((int)id) - 48;
+						if(op_id == my_id) {
+							return 'd';
+						} else if(op_id < my_id) {
+							return 'w';
+						} else if(op_id > my_id) {
+							return 'l';
+						}
+				}// END INNER SWITCH
+		}// END SWITCH
+		return '0';
+	}// END METHOD
+}// END CLASS
