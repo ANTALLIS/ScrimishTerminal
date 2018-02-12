@@ -46,8 +46,13 @@ public class Player {
 		}
 		
 		// Placing crown card
-		System.out.print("Where would you like the crown card (0 - " + (num_of_piles-1) + "): ");
-		n = reader.nextInt();
+		while(true) {
+			System.out.print("Where would you like the crown card (0 - " + (num_of_piles-1) + "): ");
+			n = reader.nextInt();
+			if(n < num_of_piles && n > 0)
+				break;
+			System.out.println("Error: Out of bounds");
+		}
 		
 		piles.get(n).add(new Card('C')); // Scans the next token of the input as an int.
 	}
