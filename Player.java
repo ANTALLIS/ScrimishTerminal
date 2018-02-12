@@ -55,9 +55,14 @@ public class Player {
 		}
 		
 		piles.get(n).add(new Card('C')); // Scans the next token of the input as an int.
+		// TODO: Finish off this
 	}
 	
 	public ArrayList<ArrayList<Card>> getPiles() {
 		return piles;
+	}
+	
+	public void printTopCards(){
+		// TODO: Finish this off as well
 	}
 }

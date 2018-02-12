@@ -53,22 +53,22 @@ public class Card {
 		switch(id) {
 			case 'C':
 				if(opponent.getId() == 'C') {
-					return 'W';
+					return 'W';// WIN the whole game
 				} else {
-					return 'L';
+					return 'L';// LOSE the whole game
 				}
 			case 'A':
 				if(opponent.getId() == 'S') {
-					return 'r';
+					return 'r';// Return both cards to their piles
 				} else {
-					return 'w';
+					return 'w';// Win the round
 				}
 			case 'S':
-				return 'e';
+				return 'e';// Error(This shouldn't happen)
 			default:
 				switch(opponent.getId()) {
 					case 'S':
-						return 'd';
+						return 'd';// Discard both cards
 					case 'C':
 						return 'W';
 					case 'A':
@@ -80,11 +80,10 @@ public class Card {
 							return 'd';
 						} else if(op_id < my_id) {
 							return 'w';
-						} else if(op_id > my_id) {
-							return 'l';
+						} else {
+							return 'l';// Lose the round
 						}
 				}// END INNER SWITCH
 		}// END SWITCH
-		return '0';
 	}// END METHOD
 }// END CLASS
