@@ -1,2 +1,2 @@
-Project by Antonio Allis
+Project by ANTALLIS
 Based on the Scrimish card game.

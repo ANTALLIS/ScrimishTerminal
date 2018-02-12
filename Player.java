@@ -18,6 +18,15 @@ public class Player {
 		return name;
 	}
 	
+	private void printRemainingCards(ArrayList<Card> AL) {
+		String output = "";
+		System.out.print("Remaining cards: ");
+		for(Card e : AL) {
+			output += (e.getName() + ", ");
+		}
+		System.out.println(output.substring(0, s.length - 2));
+	}
+	
 	public void pileSetup(int num_of_piles) {
 		piles = new ArrayList<ArrayList<Card>>();
 		Scanner reader = new Scanner(System.in);  // Reading from System.in
@@ -41,7 +50,7 @@ public class Player {
 		}
 		
 		// Setting up the piles
-		for(int i = 0; i < num_of_piles; i++){
+		for(int i = 0; i < num_of_piles; i++) {
 			piles.add(new ArrayList<Card>());
 		}
 		
@@ -55,14 +64,33 @@ public class Player {
 		}
 		
 		piles.get(n).add(new Card('C')); // Scans the next token of the input as an int.
-		// TODO: Finish off this
+		
+		// Setup card piles
+		System.out.println("Start setting up your cards");
+		while(remaining_cards > 0) {
+			
+		}
+		System.out.println("Done!");
 	}
 	
 	public ArrayList<ArrayList<Card>> getPiles() {
 		return piles;
 	}
+
+	public void printPiles() {
+		int i = 0;
+		for(ArrayList<Card> e : piles) {
+			System.out.print("Pile " + i + ": ")
+			for(Card f : e) {
+				System.out.print(e.getName() + ", ");
+			}
+		i++;
+		}
+	}
 	
-	public void printTopCards(){
-		// TODO: Finish this off as well
+	public void printTopCards() {
+		for(ArrayList<Card> e : piles) {
+			System.out.print(e.get(0).getName() + ", ");
+		}
 	}
 }
