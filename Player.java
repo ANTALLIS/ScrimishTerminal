@@ -4,6 +4,7 @@ import java.util.*;
 public class Player {
 	private String name;
 	private ArrayList<ArrayList<Card>> piles;
+	private static final int MAX_PILE_SIZE = 5;
 	
 	public Player(String name, int num_of_piles) {
 		setName(name);
@@ -18,19 +19,20 @@ public class Player {
 		return name;
 	}
 	
-	private void printRemainingCards(ArrayList<Card> AL) {
+	private static void printRemainingCards(ArrayList<Card> AL) {
 		String output = "";
+		int i = 0;
 		System.out.print("Remaining cards: ");
 		for(Card e : AL) {
-			output += (e.getName() + ", ");
+			output += ("(" + i + ")" + e.getName() + ", ");
 		}
-		System.out.println(output.substring(0, s.length - 2));
+		System.out.println(output.substring(0, output.length() - 2));
 	}
 	
 	public void pileSetup(int num_of_piles) {
 		piles = new ArrayList<ArrayList<Card>>();
 		Scanner reader = new Scanner(System.in);  // Reading from System.in
-		int n;
+		int n, m;
 		// Setting up the cards
 		ArrayList<Card> remaining_cards = new ArrayList<Card>();
 		for(int i = 0; i < 5; i++) {
@@ -67,8 +69,26 @@ public class Player {
 		
 		// Setup card piles
 		System.out.println("Start setting up your cards");
-		while(remaining_cards > 0) {
+		while(remaining_cards.size() > 0) {
+			System.out.print("Choose pile: ");
+			n = reader.nextInt();
+			if(n < 0 || n > (num_of_piles - 1)) {// Checking that n is within bounds
+				System.out.println("Error: Out of bounds");
+				continue;
+			} else if(piles.get(n).size() > MAX_PILE_SIZE) {// Checking that the pile isn't maxed out
+				System.out.println("Error: Pile is at max size");
+				continue;
+			}
 			
+			Player.printRemainingCards(remaining_cards);
+			System.out.print("What card would you like to put their (0 - " + (remaining_cards.size() - 1) + "): ");
+			m = reader.nextInt();
+			if(m > remaining_cards.size() || m < 0) {
+				System.out.println("Error: Out of bounds");
+				continue;
+			}
+			piles.get(n).add(remaining_cards.get(m));
+			remaining_cards.remove(m);
 		}
 		System.out.println("Done!");
 	}
@@ -80,9 +100,9 @@ public class Player {
 	public void printPiles() {
 		int i = 0;
 		for(ArrayList<Card> e : piles) {
-			System.out.print("Pile " + i + ": ")
+			System.out.print("Pile " + i + ": ");
 			for(Card f : e) {
-				System.out.print(e.getName() + ", ");
+				System.out.print(f.getName() + ", ");
 			}
 		i++;
 		}
