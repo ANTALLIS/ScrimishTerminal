@@ -20,11 +20,12 @@ public class Player {
 	}
 	
 	private static void printRemainingCards(ArrayList<Card> AL) {
-		String output = "";
+		String output = " ";
 		int i = 0;
 		System.out.print("Remaining cards: ");
 		for(Card e : AL) {
 			output += ("(" + i + ")" + e.getName() + ", ");
+			i++;
 		}
 		System.out.println(output.substring(0, output.length() - 2));
 	}
@@ -33,6 +34,7 @@ public class Player {
 		piles = new ArrayList<ArrayList<Card>>();
 		Scanner reader = new Scanner(System.in);  // Reading from System.in
 		int n, m;
+		String tmp;
 		// Setting up the cards
 		ArrayList<Card> remaining_cards = new ArrayList<Card>();
 		for(int i = 0; i < 5; i++) {
@@ -70,8 +72,14 @@ public class Player {
 		// Setup card piles
 		System.out.println("Start setting up your cards");
 		while(remaining_cards.size() > 0) {
-			System.out.print("Choose pile: ");
-			n = reader.nextInt();
+			System.out.print("Choose pile (0 - " + num_of_piles + ") or view remaining cards (v): ");
+			tmp = reader.nextLine();
+			if(tmp.equals("v")) {
+				Player.printRemainingCards(remaining_cards);
+				continue;
+			} else {
+				n = Integer.parseInt(tmp);
+			}
 			if(n < 0 || n > (num_of_piles - 1)) {// Checking that n is within bounds
 				System.out.println("Error: Out of bounds");
 				continue;
@@ -81,7 +89,7 @@ public class Player {
 			}
 			
 			Player.printRemainingCards(remaining_cards);
-			System.out.print("What card would you like to put their (0 - " + (remaining_cards.size() - 1) + "): ");
+			System.out.print("What card would you like to put there (0 - " + (remaining_cards.size() - 1) + "): ");
 			m = reader.nextInt();
 			if(m > remaining_cards.size() || m < 0) {
 				System.out.println("Error: Out of bounds");
