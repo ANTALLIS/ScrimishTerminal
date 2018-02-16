@@ -19,15 +19,24 @@ public class Player {
 		return name;
 	}
 	
-	private static void printRemainingCards(ArrayList<Card> AL) {
-		String output = " ";
-		int i = 0;
-		System.out.print("Remaining cards: ");
-		for(Card e : AL) {
-			output += ("(" + i + ")" + e.getName() + ", ");
-			i++;
+	private static void printRemainingCards(int[] AL) {
+		System.out.print("[1] Dagger (" + AL[0] + ")  ");
+		System.out.print("[2] Sword (" + AL[1] + ")  ");
+		System.out.print("[3] Morning Star (" + AL[2] + ")  ");
+		System.out.print("[4] War Axe (" + AL[3] + ")  ");
+		System.out.print("[5] Halberd (" + AL[4] + ")  ");
+		System.out.print("[6] Longsword (" + AL[5] + ")  ");
+		System.out.print("[7] Archer (" + AL[6] + ")  ");
+		System.out.println("[8] Shield (" + AL[7] + ")");
+
+	}
+	
+	private static boolean checkArrayValue(int[] testingArray, int comp_number) {
+		for(int e : testingArray) {
+			if(e != comp_number)
+				return false;
 		}
-		System.out.println(output.substring(0, output.length() - 2));
+		return true;
 	}
 	
 	public void pileSetup(int num_of_piles) {
@@ -35,23 +44,9 @@ public class Player {
 		Scanner reader = new Scanner(System.in);  // Reading from System.in
 		int n, m;
 		String tmp;
+		
 		// Setting up the cards
-		ArrayList<Card> remaining_cards = new ArrayList<Card>();
-		for(int i = 0; i < 5; i++) {
-			remaining_cards.add(new Card('1'));
-			remaining_cards.add(new Card('2'));
-		}
-		for(int i = 0; i < 3; i++) {
-			remaining_cards.add(new Card('3'));
-			remaining_cards.add(new Card('4'));
-		}
-		for(int i = 0; i < 2; i++) {
-			remaining_cards.add(new Card('5'));
-			remaining_cards.add(new Card('6'));
-			remaining_cards.add(new Card('A'));
-			remaining_cards.add(new Card('S'));
-
-		}
+		int[] remaining_cards = {5, 5, 3, 3, 2, 2, 2, 2};
 		
 		// Setting up the piles
 		for(int i = 0; i < num_of_piles; i++) {
@@ -62,7 +57,7 @@ public class Player {
 		while(true) {
 			System.out.print("Where would you like the crown card (0 - " + (num_of_piles-1) + "): ");
 			n = reader.nextInt();
-			if(n < num_of_piles && n > 0)
+			if(n < num_of_piles && n >= 0)
 				break;
 			System.out.println("Error: Out of bounds");
 		}
@@ -71,9 +66,10 @@ public class Player {
 		
 		// Setup card piles
 		System.out.println("Start setting up your cards");
-		while(remaining_cards.size() > 0) {
+		while(Player.checkArrayValue(remaining_cards, 0) == false) {
 			System.out.print("Choose pile (0 - " + num_of_piles + ") or view remaining cards (v): ");
-			tmp = reader.nextLine();
+			tmp = reader.next();
+			Card tmp2;
 			if(tmp.equals("v")) {
 				Player.printRemainingCards(remaining_cards);
 				continue;
@@ -87,16 +83,47 @@ public class Player {
 				System.out.println("Error: Pile is at max size");
 				continue;
 			}
-			
-			Player.printRemainingCards(remaining_cards);
-			System.out.print("What card would you like to put there (0 - " + (remaining_cards.size() - 1) + "): ");
+			System.out.print("What card would you like to put there (1 - 8): ");
 			m = reader.nextInt();
-			if(m > remaining_cards.size() || m < 0) {
+			if(m > 8 || m < 0) {
 				System.out.println("Error: Out of bounds");
 				continue;
+			} else if (remaining_cards[m-1] == 0) {
+				System.out.println("No more of that card");
+				continue;
 			}
-			piles.get(n).add(remaining_cards.get(m));
-			remaining_cards.remove(m);
+			switch(m) {
+				case 1:
+					tmp2 = new Card('1');
+					break;
+				case 2:
+					tmp2 = new Card('2');
+					break;
+				case 3:
+					tmp2 = new Card('3');
+					break;
+				case 4:
+					tmp2 = new Card('4');
+					break;
+				case 5:
+					tmp2 = new Card('5');
+					break;
+				case 6:
+					tmp2 = new Card('6');
+					break;
+				case 7:
+					tmp2 = new Card('A');
+					break;
+				case 8:
+					tmp2 = new Card('S');
+					break;
+				default:
+					System.out.println("Option not valid");
+					continue;
+
+			}
+			piles.get(n).add(tmp2);
+			remaining_cards[m-1]--;
 		}
 		System.out.println("Done!");
 	}
