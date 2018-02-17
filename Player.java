@@ -6,9 +6,9 @@ public class Player {
 	private ArrayList<ArrayList<Card>> piles;
 	private static final int MAX_PILE_SIZE = 5;
 	
-	public Player(String name, int num_of_piles) {
+	public Player(String name) {
 		setName(name);
-		pileSetup(num_of_piles);
+		pileSetup();
 	}
 	
 	public void setName(String name) {
@@ -39,7 +39,8 @@ public class Player {
 		return true;
 	}
 	
-	public void pileSetup(int num_of_piles) {
+	public void pileSetup() {
+		final int num_of_piles = 5;
 		piles = new ArrayList<ArrayList<Card>>();
 		Scanner reader = new Scanner(System.in);  // Reading from System.in
 		int n, m;
@@ -49,34 +50,36 @@ public class Player {
 		int[] remaining_cards = {5, 5, 3, 3, 2, 2, 2, 2};
 		
 		// Setting up the piles
-		for(int i = 0; i < num_of_piles; i++) {
+		for(int i = 0; i < num_of_piles+1; i++) {
 			piles.add(new ArrayList<Card>());
 		}
 		
 		// Placing crown card
 		while(true) {
-			System.out.print("Where would you like the crown card (0 - " + (num_of_piles-1) + "): ");
+			System.out.print("Where would you like the crown card (1 - 5): ");
 			n = reader.nextInt();
-			if(n < num_of_piles && n >= 0)
+			if(n <= 5 && n >= 1)
 				break;
 			System.out.println("Error: Out of bounds");
 		}
 		
-		piles.get(n).add(new Card('C')); // Scans the next token of the input as an int.
+		piles.get(n-1).add(new Card('C')); // Scans the next token of the input as an int.
 		
 		// Setup card piles
 		System.out.println("Start setting up your cards");
 		while(Player.checkArrayValue(remaining_cards, 0) == false) {
-			System.out.print("Choose pile (0 - " + num_of_piles + ") or view remaining cards (v): ");
+			System.out.print("Choose pile (1 - 5) or view remaining cards (v): ");
 			tmp = reader.next();
 			Card tmp2;
 			if(tmp.equals("v")) {
 				Player.printRemainingCards(remaining_cards);
 				continue;
-			} else {
-				n = Integer.parseInt(tmp);
+			} else if (!tmp.matches("[0-9+]")) {
+				System.out.println("Option not valid");
+				continue;
 			}
-			if(n < 0 || n > (num_of_piles - 1)) {// Checking that n is within bounds
+			n = Integer.parseInt(tmp) + 1;
+			if(n < 1 || n > 6) {// Checking that n is within bounds
 				System.out.println("Error: Out of bounds");
 				continue;
 			} else if(piles.get(n).size() > MAX_PILE_SIZE) {// Checking that the pile isn't maxed out
@@ -84,8 +87,13 @@ public class Player {
 				continue;
 			}
 			System.out.print("What card would you like to put there (1 - 8): ");
-			m = reader.nextInt();
-			if(m > 8 || m < 0) {
+			tmp = reader.next();
+			if (!tmp.matches("[0-9+]")){
+				System.out.println("Option not valid");
+				continue;
+			}
+			m = Integer.parseInt(tmp);
+			if(m > 8 || m < 1) {
 				System.out.println("Error: Out of bounds");
 				continue;
 			} else if (remaining_cards[m-1] == 0) {
@@ -122,7 +130,7 @@ public class Player {
 					continue;
 
 			}
-			piles.get(n).add(tmp2);
+			piles.get(n-1).add(tmp2);
 			remaining_cards[m-1]--;
 		}
 		System.out.println("Done!");
