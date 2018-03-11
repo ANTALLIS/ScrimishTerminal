@@ -193,7 +193,7 @@ public class Player {
 		piles.get(pile_num).remove(0);
 	}
 	
-	public char attackPlayer(Player opp_player) {	
+	public char attackPlayer(Player opp_player) {
 		Scanner reader = new Scanner(System.in);  // Reading from System.in
 		int n, m;
 		while(true) {
@@ -204,13 +204,13 @@ public class Player {
 					System.out.println("Out of bounds");
 					continue;
 				} else if(piles.get(n).isEmpty() == true) {
-					System("That pile is empty.");
+					System.out.println("That pile is empty.");
 				}
 			} else {
 				System.out.println("Error: Input not valid\n");
 				reader.next();
 				continue;
-			}			
+			}
 			
 			System.out.print("Choose opponent's pile (1 - 5): ");
 			if(reader.hasNextInt()) {
