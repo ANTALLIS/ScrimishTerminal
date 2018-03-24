@@ -52,17 +52,15 @@ public class Card {
 	public char attack(Card opponent) {
 		switch(id) {
 			case 'C':
-				if(opponent.getId() == 'C') {
+				if(opponent.getId() == 'C')
 					return 'W';// WIN the whole game
-				} else {
+				else
 					return 'L';// LOSE the whole game
-				}
 			case 'A':
-				if(opponent.getId() == 'S') {
+				if(opponent.getId() == 'S')
 					return 'r';// Return both cards to their piles
-				} else {
+				else
 					return 'w';// Win the round
-				}
 			case 'S':
 				return 'e';// Error(This shouldn't happen)
 			default:
@@ -76,13 +74,12 @@ public class Card {
 					default:
 						int op_id = ((int)opponent.getId()) - 48;
 						int my_id = ((int)id) - 48;
-						if(op_id == my_id) {
+						if(op_id == my_id) 
 							return 'd';
-						} else if(op_id < my_id) {
+						else if(op_id < my_id)
 							return 'w';
-						} else {
+						else
 							return 'l';// Lose the round
-						}
 				}// END INNER SWITCH
 		}// END SWITCH
 	}// END METHOD

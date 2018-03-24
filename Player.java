@@ -8,19 +8,23 @@ public class Player {
 	private static final int num_of_piles = 5;
 	
 	public Player(String name) {
+		//Constructor method
 		setName(name);
-		pileSetup();
+		//pileSetup();
 	}
 	
 	public void setName(String name) {
+		//Setter method to set name of card
 		this.name = name;
 	}
 	
 	public String getName() {
+		//Getter method to return name of card
 		return name;
 	}
 	
 	private static void printRemainingCards(int[] AL) {
+		//Used for the pileSetup Method
 		System.out.print("[1] Dagger (" + AL[0] + ")  ");
 		System.out.print("[2] Sword (" + AL[1] + ")  ");
 		System.out.print("[3] Morning Star (" + AL[2] + ")  ");
@@ -33,6 +37,7 @@ public class Player {
 	}
 	
 	private static boolean checkArrayValue(int[] testingArray, int comp_number) {
+		//Checks the all elements of testingArray are equal to comp_number
 		for(int e : testingArray) {
 			if(e != comp_number)
 				return false;
@@ -54,29 +59,75 @@ public class Player {
 	}
 
 	public void printPiles() {
+		//Prints every card in every piles, if piles is empty then just prints "Empty"
 		int i = 1;
+		System.out.println(name);
 		System.out.println("Top --------------------------> Bottom");
 		for(ArrayList<Card> e : piles) {
 			System.out.print("\nPile " + i + ": ");
-			for(Card f : e) {
-				System.out.print(f.getName() + "   ");
+			if(e.isEmpty() == true) {
+				System.out.print("Empty");
+			} else {
+				for(Card f : e) {
+					System.out.print(f.getName() + "   ");
+				}
+				System.out.println("");
 			}
-			System.out.println("");
 		i++;
 		}
+		System.out.println("");
+
 	}
 	
 	public void printTopCards() {
+		//Prints only the top cards
 		System.out.println("Top cards of piles:");
 		int i = 1;
 		for(ArrayList<Card> e : piles) {
-			System.out.print(i + ":" + e.get(0).getName() + "  ");
+			if(e.isEmpty() == true)
+				System.out.print(i + ":" + "-------" + "  ");
+			else
+				System.out.print(i + ":" + e.get(0).getName() + "  ");
 			i++;
 		}
 		System.out.println("");
 	}
 	
+	public void setupDefault() {
+		//Default deck just for testing
+		this.resetPiles();
+		for(int i = 0; i < 4; i++) 
+			piles.get(0).add(new Card('1'));
+		piles.get(0).add(new Card('C'));
+				
+		for(int i = 0; i < 4; i++) 
+			piles.get(1).add(new Card('2'));
+		piles.get(1).add(new Card('1'));
+		
+		piles.get(2).add(new Card('4'));
+		for(int i = 0; i < 3; i++)
+			piles.get(2).add(new Card('3'));
+		piles.get(2).add(new Card('2'));
+		
+		piles.get(3).add(new Card('6'));
+		for(int i = 0; i < 2; i++)
+			piles.get(3).add(new Card('5'));
+		for(int i = 0; i < 2; i++)
+			piles.get(3).add(new Card('4'));
+		
+		for(int i = 0; i < 2; i++)
+			piles.get(4).add(new Card('A'));
+		for(int i = 0; i < 2; i++)
+			piles.get(4).add(new Card('S'));
+		piles.get(4).add(new Card('6'));
+	}
+	
+	public void randomDeck() {
+		System.out.println("Hello World");
+	}
+	
 	public void pileSetup() {
+		//This allows the player to choose how to set up their piles
 		System.out.println(name + " Start setting up your cards");
 		this.resetPiles();
 		Scanner reader = new Scanner(System.in);  // Reading from System.in
@@ -190,80 +241,92 @@ public class Player {
 	}
 	
 	public void removeCard(int pile_num) {
+		//Method to remove the top card of a pile
 		piles.get(pile_num).remove(0);
 	}
 	
 	public char attackPlayer(Player opp_player) {
+		//Returns char depending on the result. Also removes the losing cards
+		System.out.println(name + " attacks " + opp_player.getName());
 		Scanner reader = new Scanner(System.in);  // Reading from System.in
 		int n, m;
+		String o;
 		while(true) {
-			System.out.print("Choose your pile (1 - 5): ");
+			System.out.print("Choose your pile (1 - 5) or (q)uit: ");
 			if(reader.hasNextInt()) {
-				n = reader.nextInt();
-				if(n > 5 || n < 1) {
-					System.out.println("Out of bounds");
+				n = reader.nextInt() - 1;
+				if(n > 4 || n < 0) {
+					System.out.println("Out of bounds\n");
 					continue;
 				} else if(piles.get(n).isEmpty() == true) {
-					System.out.println("That pile is empty.");
+					System.out.println("That pile is empty.\n");
+					continue;
+				} else if (piles.get(n).get(0).equals(new Card('S')))
+					System.out.println("Can't attack with shield\n");
+					continue;
 				}
 			} else {
+				o = reader.next();
+				if(o.equals("q") || o.equals("Q"))
+					return 'q';
 				System.out.println("Error: Input not valid\n");
-				reader.next();
 				continue;
 			}
 			
-			System.out.print("Choose opponent's pile (1 - 5): ");
+			System.out.print("Choose opponent's pile (1 - 5) or (q)uit: ");
 			if(reader.hasNextInt()) {
-				m = reader.nextInt();
-				if(m > 5 || m < 1) {
-					System.out.println("Out of bounds");
+				m = reader.nextInt() - 1;
+				if(m > 4 || m < 0) {
+					System.out.println("Out of bounds\n");
 					continue;
 				} else if(opp_player.getPiles().get(m).isEmpty() == true) {
-					System.out.println("That pile is empty");
+					System.out.println("That pile is empty\n");
 					continue;
 				}
 			} else {
+				o = reader.next();
+				if(o.equals("q") || o.equals("Q"))
+					return 'q';
 				System.out.println("Error: Input not valid\n");
-				reader.next();
 				continue;
 			}
 			break;
 		}
 
-		Card p1_card = piles.get(n-1).get(0);
-		Card p2_card = opp_player.getPiles().get(0).get(m-1);
+		Card p1_card = piles.get(n).get(0);
+		Card p2_card = opp_player.getPiles().get(m).get(0);
 		char result = p1_card.attack(p2_card);
-		System.out.print("Pile " + n + ": " + p1_card.getName() + " attacks ");
-		System.out.println("Pile " + m + ": " + p2_card.getName());
+		System.out.print("Pile " + (n+1) + ": " + p1_card.getName() + " attacks ");
+		System.out.println("Pile " + (m+1) + ": " + p2_card.getName());
 		System.out.println("result: " + result);
 		switch(result) {
 			case 'W':
-				System.out.println("Player " + name + " wins!");
+				System.out.println("Player " + name + " wins!\n");
 				return 'W';
 			case 'w':
-				System.out.println("Opponent loses their card");
-				opp_player.removeCard(n-1);
+				System.out.println("Opponent loses their card\n");
+				opp_player.removeCard(m);
 				break;
 			case 'L':
-				System.out.println("Player " + name + " loses!");
+				System.out.println("Player " + name + " loses!\n");
 				return 'L';
 			case 'l':
 				System.out.println("You lose your card");
-				this.removeCard(m-1);
+				removeCard(n);
 				break;
 			case 'r':
-				System.out.println("Both players return their cards to their piles");
+				System.out.println("Both players return their cards to their piles\n");
 				break;
 			case 'd':
-				System.out.println("Both players discard their cards");
-				this.removeCard(n-1);
-				opp_player.removeCard(m-1);
+				System.out.println("Both players discard their cards\n");
+				removeCard(n);
+				opp_player.removeCard(m);
 				break;
 			case 'e':
-				System.out.println("Error e!");
+				System.out.println("Error e!\n");
 				System.exit(0);
 			default:
-				System.out.println("Error default!");
+				System.out.println("Error default!\n");
 				System.exit(0);
 		}
 		return 'x';
