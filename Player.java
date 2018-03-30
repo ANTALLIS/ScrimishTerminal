@@ -261,7 +261,7 @@ public class Player {
 				} else if(piles.get(n).isEmpty() == true) {
 					System.out.println("That pile is empty.\n");
 					continue;
-				} else if (piles.get(n).get(0).equals(new Card('S')))
+				} else if (piles.get(n).get(0).equals(new Card('S'))) {
 					System.out.println("Can't attack with shield\n");
 					continue;
 				}
