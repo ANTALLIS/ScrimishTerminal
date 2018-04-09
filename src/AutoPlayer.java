@@ -2,25 +2,40 @@ import java.awt.*;
 import java.util.*;
 
 public class AutoPlayer extends Player {
-	private String name;
-	private ArrayList<ArrayList<Card>> piles;
-	private static final int MAX_PILE_SIZE = 5;
-	private static final int num_of_piles = 5;
+	public AutoPlayer() {
+		//No-arg constructor
+		setName("No-name (AI)");
+	}
 	
 	public AutoPlayer(String name) {
-		super(name);
+		//constructor
+		setName(name + " (AI)");
 	}
 	
 	public char attackPlayer(Player opp_player) {
 		//Returns char depending on the result. Also removes the losing cards
-		System.out.println(name + "(AI) attacks " + opp_player.getName());
+		System.out.println(name + " attacks " + opp_player.getName());
+		int m, n;
+		
+		while(true) {
+			m = (int)(Math.random() * 5);
+			n = (int)(Math.random() * 5);
+			
+			if(piles.get(m).isEmpty())
+				continue; // If the pile is empty
+			else if(opp_player.getPiles().get(n).isEmpty())
+				continue; // If the opponent's pile is empty
+			else if(piles.get(m).get(0).equals(new Card('S')))
+				continue; // If the top card is a shield
+			break;
+		}
 
-		int n, m;
-		n = (int)(Math.random() * 5);
-		m = (int)(Math.random() * 5);
-		System.out.println("Choose your pile (1 - 5) or (q)uit: " + (n+1));
-		System.out.println("Choose opponent's pile (1 - 5) or (q)uit: " + (m+1));
+		System.out.print("Pile: ");
+		System.out.println(m + 1);
 
+		System.out.print("Opponent's pile: ");
+		System.out.println(n + 1);
+		
 		return findResult(opp_player, m, n);
 	}
 }

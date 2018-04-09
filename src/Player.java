@@ -2,19 +2,24 @@ import java.awt.*;
 import java.util.*;
 
 public class Player {
-	private String name;
-	private ArrayList<ArrayList<Card>> piles;
-	private static final int MAX_PILE_SIZE = 5;
-	private static final int num_of_piles = 5;
+	String name;
+	ArrayList<ArrayList<Card>> piles;
+	static final int MAX_PILE_SIZE = 5;
+	static final int num_of_piles = 5;
+	
+	public Player() {
+		//No-arg constructor
+		setName("No-name");
+	}
 	
 	public Player(String name) {
 		//Constructor
 		setName(name);
 	}
 	
-	public void setName(String name) {
+	public void setName(String my_name) {
 		//Setter method to set name of card
-		this.name = name;
+		name = my_name;
 	}
 	
 	public String getName() {
@@ -179,7 +184,6 @@ public class Player {
 				}
 			}
 			
-			
 			if(n < 1 || n > 5) {// Checking that n is within bounds
 				System.out.println("Error: Out of bounds\n");
 				continue;
@@ -244,23 +248,45 @@ public class Player {
 		piles.get(pile_num).remove(0);
 	}
 	
+	public void discardCard(int pile_num) {
+		//Discard a card rather than attack this turn
+		Scanner reader = new Scanner(System.in);
+		int n;
+		while(true) {
+			System.out.println("Choose pile (1 - 5): ");
+			if(reader.hasNextInt()) {
+				n = reader.nextInt();
+				if(n > 5 || n < 1) {
+					System.out.println("Out of bounds\n");
+					continue;
+				} else if(piles.get(n).isEmpty()) {
+					System.out.println("Is empty\n");
+					continue;
+				}
+			} else {
+				reader.next();
+				continue;
+			}
+		}
+	}
+	
 	public char attackPlayer(Player opp_player) {
 		//Returns char depending on the result. Also removes the losing cards
 		System.out.println(name + " attacks " + opp_player.getName());
 		Scanner reader = new Scanner(System.in);  // Reading from System.in
-		int n, m;
+		int m, n;
 		String o;
 		while(true) {
 			System.out.print("Choose your pile (1 - 5) or (q)uit: ");
 			if(reader.hasNextInt()) {
-				n = reader.nextInt() - 1;
-				if(n > 4 || n < 0) {
+				m = reader.nextInt() - 1;
+				if(m > 4 || m < 0) {
 					System.out.println("Out of bounds\n");
 					continue;
-				} else if(piles.get(n).isEmpty() == true) {
+				} else if(piles.get(m).isEmpty() == true) {
 					System.out.println("That pile is empty.\n");
 					continue;
-				} else if (piles.get(n).get(0).equals(new Card('S'))) {
+				} else if (piles.get(m).get(0).equals(new Card('S'))) {
 					System.out.println("Can't attack with shield\n");
 					continue;
 				}
@@ -276,11 +302,11 @@ public class Player {
 			
 			System.out.print("Choose opponent's pile (1 - 5) or (q)uit: ");
 			if(reader.hasNextInt()) {
-				m = reader.nextInt() - 1;
-				if(m > 4 || m < 0) {
+				n = reader.nextInt() - 1;
+				if(n > 4 || n < 0) {
 					System.out.println("Out of bounds\n");
 					continue;
-				} else if(opp_player.getPiles().get(m).isEmpty() == true) {
+				} else if(opp_player.getPiles().get(n).isEmpty() == true) {
 					System.out.println("That pile is empty\n");
 					continue;
 				}
@@ -300,11 +326,11 @@ public class Player {
 
 	public char findResult(Player opp_player, int m, int n) {
 
-		Card p1_card = piles.get(n).get(0);
-		Card p2_card = opp_player.getPiles().get(m).get(0);
+		Card p1_card = piles.get(m).get(0);
+		Card p2_card = opp_player.getPiles().get(n).get(0);
 		char result = p1_card.attack(p2_card);
-		System.out.print("Pile " + (n+1) + ": " + p1_card.getName() + " attacks ");
-		System.out.println("Pile " + (m+1) + ": " + p2_card.getName());
+		System.out.print("Pile " + (m+1) + ": " + p1_card.getName() + " attacks ");
+		System.out.println("Pile " + (n+1) + ": " + p2_card.getName());
 		System.out.println("result: " + result);
 		
 		switch(result) {
@@ -313,22 +339,22 @@ public class Player {
 				return 'W';
 			case 'w':
 				System.out.println(opp_player.getName() + " loses their card\n");
-				opp_player.removeCard(m);
+				opp_player.removeCard(n);
 				return 'w';
 			case 'L':
-				System.out.println(name + " loses!\n");
+				System.out.println(opp_player.getName() + " wins!\n");
 				return 'L';
 			case 'l':
-				System.out.println("You lose your card");
-				removeCard(n);
+				System.out.println(name + " loses their card");
+				removeCard(m);
 				return 'l';
 			case 'r':
 				System.out.println("Both players return their cards to their piles\n");
 				return 'r';
 			case 'd':
 				System.out.println("Both players discard their cards\n");
-				removeCard(n);
-				opp_player.removeCard(m);
+				removeCard(m);
+				opp_player.removeCard(n);
 				return 'd';
 			case 'e':
 				System.out.println("Error e!\n");
