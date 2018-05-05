@@ -6,6 +6,8 @@ public class Player {
 	ArrayList<ArrayList<Card>> piles;
 	static final int MAX_PILE_SIZE = 5;
 	static final int num_of_piles = 5;
+	public String marker = "----------------------------------------------------------------";
+
 	
 	public Player() {
 		//No-arg constructor
@@ -70,7 +72,7 @@ public class Player {
 		for(ArrayList<Card> e : piles) {
 			System.out.print("\nPile " + i + ": ");
 			if(e.isEmpty() == true) {
-				System.out.print("Empty");
+				System.out.print("Empty\n");
 			} else {
 				for(Card f : e) {
 					System.out.print(f.getName() + "   ");
@@ -85,16 +87,14 @@ public class Player {
 	
 	public void printTopCards() {
 		//Prints only the top cards
-		System.out.println("Top cards of piles:");
-		int i = 1;
+		System.out.print(name + ": ");
 		for(ArrayList<Card> e : piles) {
 			if(e.isEmpty() == true)
-				System.out.print(i + ":" + "-------" + "  ");
+				System.out.print("-------" + "  ");
 			else
-				System.out.print(i + ":" + e.get(0).getName() + "  ");
-			i++;
+				System.out.print(e.get(0).getName() + "  ");
 		}
-		System.out.println("");
+		System.out.println("\n");
 	}
 	
 	public void setupDefault() {
@@ -248,12 +248,13 @@ public class Player {
 		piles.get(pile_num).remove(0);
 	}
 	
-	public void discardCard(int pile_num) {
+	public boolean discardCard() {
 		//Discard a card rather than attack this turn
 		Scanner reader = new Scanner(System.in);
 		int n;
+		String o;
 		while(true) {
-			System.out.println("Choose pile (1 - 5): ");
+			System.out.print("Choose pile (1 - 5) or (a)ttack: ");
 			if(reader.hasNextInt()) {
 				n = reader.nextInt();
 				if(n > 5 || n < 1) {
@@ -263,21 +264,28 @@ public class Player {
 					System.out.println("Is empty\n");
 					continue;
 				}
+				System.out.println("Discarded " + piles.get(n-1).get(0).getName());
+				removeCard(n-1);
+				return true;
 			} else {
-				reader.next();
+				o = reader.next();
+				if(o.equals("a"))
+					return false;
+				System.out.println("Invalid input");
 				continue;
 			}
 		}
 	}
 	
 	public char attackPlayer(Player opp_player) {
+		System.out.println(marker);
 		//Returns char depending on the result. Also removes the losing cards
 		System.out.println(name + " attacks " + opp_player.getName());
 		Scanner reader = new Scanner(System.in);  // Reading from System.in
-		int m, n;
+		int m = 0, n = 0;
 		String o;
 		while(true) {
-			System.out.print("Choose your pile (1 - 5) or (q)uit: ");
+			System.out.print("Choose your pile (1 - 5), (v)iew top cards, (d)iscard card or (q)uit: ");
 			if(reader.hasNextInt()) {
 				m = reader.nextInt() - 1;
 				if(m > 4 || m < 0) {
@@ -295,6 +303,14 @@ public class Player {
 				if(o.equals("q") || o.equals("Q")){
 					System.out.println("\nByeeee!");
 					System.exit(0);
+				} else if(o.equals("v")) {
+					printTopCards();
+					continue;
+				} else if(o.equals("d")) {
+					if(discardCard())
+						break;
+					else
+						continue;
 				}
 				System.out.println("Error: Input not valid\n");
 				continue;
@@ -321,6 +337,8 @@ public class Player {
 			}
 			break;
 		}
+		System.out.println(marker);
+		
 		return findResult(opp_player, m, n);
 	}
 

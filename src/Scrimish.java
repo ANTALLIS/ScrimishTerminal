@@ -1,25 +1,25 @@
 import java.util.*;
 import java.io.IOException;
+import javax.swing.*;
 
 public class Scrimish {
 	public void startGame() throws IOException {
 		Player p1 = new Player("Bob");
 		AutoPlayer p2 = new AutoPlayer("Dave");
-		String marker = "------------------------------------------------------------------------------";
 		int turn = 1;
 		char result = 'W';
 		
-		p1.setName("Bob");
+		p1.setName(JOptionPane.showInputDialog("Your name:"));
 		p2.setName("Dave");
 		
-		p1.setupDefault();
+		p1.pileSetup();
 		p2.setupDefault();
 
 		Scanner s = new Scanner(System.in);
 
 		while(true) {
-			p1.printPiles();
-			p2.printPiles();
+			p1.printTopCards();
+			p2.printTopCards();
 			
 			if(turn == 1) {
 				result = p1.attackPlayer(p2);
@@ -32,7 +32,6 @@ public class Scrimish {
 			if(result == 'W' || result == 'L')
 				break;
 			
-			System.out.println(marker);
 			System.in.read();
 		}
 	}

@@ -57,7 +57,9 @@ public class Card {
 				else
 					return 'L';// LOSE the whole game
 			case 'A':
-				if(opponent.getId() == 'S')
+				if(opponent.getId() == 'C')
+					return 'W';
+				else if(opponent.getId() == 'S')
 					return 'r';// Return both cards to their piles
 				else
 					return 'w';// Win the round

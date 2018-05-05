@@ -2,6 +2,8 @@ import java.awt.*;
 import java.util.*;
 
 public class AutoPlayer extends Player {
+	public String marker = "----------------------------------------------------------------";
+	
 	public AutoPlayer() {
 		//No-arg constructor
 		setName("No-name (AI)");
@@ -14,8 +16,10 @@ public class AutoPlayer extends Player {
 	
 	public char attackPlayer(Player opp_player) {
 		//Returns char depending on the result. Also removes the losing cards
+		System.out.println(marker);
 		System.out.println(name + " attacks " + opp_player.getName());
 		int m, n;
+		char result;
 		
 		while(true) {
 			m = (int)(Math.random() * 5);
@@ -35,7 +39,9 @@ public class AutoPlayer extends Player {
 
 		System.out.print("Opponent's pile: ");
 		System.out.println(n + 1);
-		
-		return findResult(opp_player, m, n);
+		result = findResult(opp_player, m, n);
+
+		System.out.println(marker);
+		return result;
 	}
 }
