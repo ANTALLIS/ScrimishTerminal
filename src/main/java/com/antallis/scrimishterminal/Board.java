@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
+import com.antallis.scrimishterminal.PlayerMove.MoveType;
+
 public class Board {
   private static final int MAX_SIZE = 5;
   private ArrayList<Stack> stacks;
@@ -287,32 +289,32 @@ public class Board {
         System.out.println(toString());
         System.out.println("Cards left to pick from:");
         System.out.println(deckToStringFull());
+        System.out.println("Which card (1 - 6, A, S, C) and in which column do you want to place it (1 - 5)?");
         printStatus = false;
       }
 
       // Get player input
-      System.out.println("Which card (1 - 6, A, S, C) and in which column do you want to place it (1 - 5) ");
       System.out.print("> ");
-      String selectedCardType = sc.next().toLowerCase();
-      if (selectedCardType.equals("q")) {
+      String inputLine = sc.nextLine();
+      PlayerMove playerMove = PlayerMove.parseSetup(inputLine);
+
+      if (playerMove.getMoveType() == MoveType.EMPTY) {
+        continue;
+      } else if (playerMove.getMoveType() == MoveType.INVALID) {
+        System.out.println("Invalid choice");
+        continue;
+      } else if (playerMove.getMoveType() == MoveType.QUIT) {
         System.out.println("Quitting...");
         System.exit(0);
       }
-      String selectedBoardColumnStr = sc.next();
+
+      String selectedCardType = playerMove.getSourceStr();
       if (!crownHasBeenPlaced && !selectedCardType.equals("c")) {
         System.out.println("Crown card must be placed first");
         continue;
       }
 
-      int selectedBoardColumn;
-
-      // Try to parse the column into a string.
-      try {
-        selectedBoardColumn = Integer.parseInt(selectedBoardColumnStr) - 1;
-      } catch (Exception e) {
-        System.out.println("Column must be a number");
-        continue;
-      }
+      int selectedBoardColumn = playerMove.getTargetIndex() - 1;
 
       if (selectedBoardColumn < 0 || selectedBoardColumn >= MAX_SIZE) {
         System.out.println("Please select a column from 1 - " + Integer.toString(MAX_SIZE));
@@ -339,5 +341,13 @@ public class Board {
       }
       printStatus = true;
     }
+  }
+
+  public int getMinStackIndex() {
+    return 0;
+  }
+
+  public int getMaxStackIndex() {
+    return MAX_SIZE - 1;
   }
 }
