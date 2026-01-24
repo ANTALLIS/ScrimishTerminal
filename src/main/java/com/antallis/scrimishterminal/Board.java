@@ -278,13 +278,14 @@ public class Board {
     return true;
   }
 
-  public void setup(Scanner sc) {
+  public void setup(Scanner sc, String name) {
     boolean crownHasBeenPlaced = false;
     boolean printStatus = true;
     while (!isDeckEmpty()) {
       if (printStatus) {
         // Show status
         ScrimishTerminal.clearScreen();
+        System.out.println(name + " Setup");
         System.out.println("Your stacks:");
         System.out.println(toString());
         System.out.println("Cards left to pick from:");

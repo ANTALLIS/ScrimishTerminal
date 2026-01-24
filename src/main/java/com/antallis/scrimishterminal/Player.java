@@ -22,7 +22,7 @@ public class Player {
   }
 
   public void setup(Scanner sc) {
-    board.setup(sc);
+    board.setup(sc, name);
   }
 
   public void demoSetup() {
@@ -56,7 +56,7 @@ public class Player {
         "s 5\n" +
         "s 5\n";
     Scanner sc = new Scanner(cardString);
-    board.setup(sc);
+    board.setup(sc, name);
   }
 
   public void randomSetup() {

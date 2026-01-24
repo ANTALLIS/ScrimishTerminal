@@ -107,8 +107,8 @@ public class ScrimishTerminal {
     players.add(new Player("Marceline", Color.YELLOW));
 
     for (Player player : players) {
-      // player.setup(sc);
-      player.demoSetup();
+      player.setup(sc);
+      // player.demoSetup();
     }
 
     // Game loop
