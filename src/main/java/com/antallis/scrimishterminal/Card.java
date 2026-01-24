@@ -191,7 +191,7 @@ public class Card {
         break;
     }
 
-    return new TextBlock(result);
+    return new TextBlock(result, CARD_WIDTH);
   }
 
   public static String getEmptyCardWidth() {
@@ -240,5 +240,9 @@ public class Card {
 
   public boolean isCrownCard() {
     return cardType == CardType.CROWN;
+  }
+
+  public static int getWidth() {
+    return CARD_WIDTH;
   }
 }

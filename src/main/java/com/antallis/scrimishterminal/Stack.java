@@ -109,7 +109,7 @@ public class Stack {
     }
     result.addAll(Card.getTextBlockHidden().getRows());
 
-    return new TextBlock(result);
+    return new TextBlock(result, Card.getWidth());
   }
 
   public TextBlock getTextBlockHidden() {

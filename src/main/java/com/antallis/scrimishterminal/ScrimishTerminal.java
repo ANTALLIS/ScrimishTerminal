@@ -1,8 +1,6 @@
 package com.antallis.scrimishterminal;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
@@ -72,6 +70,15 @@ public class ScrimishTerminal {
     return "";
   }
 
+  static String getLastMoveIndicator(int oppStackIndex, int myStackIndex) {
+    int halfWidth = Card.getWidth() / 2;
+    String topRow = new String(new char[(myStackIndex - 1) * (Card.getWidth() + 1) + halfWidth]).replace('\0', ' ')
+        + "Ʌ";
+    String bottomRow = new String(new char[(oppStackIndex - 1) * (Card.getWidth() + 1) + halfWidth]).replace('\0', ' ')
+        + "V";
+    return topRow + "\n" + bottomRow;
+  }
+
   public static void main(String[] args) {
     // GameOptions opts = GameOptions.parseArgs(args);
     // if (opts.getPrintHelpText()) {
@@ -103,15 +110,18 @@ public class ScrimishTerminal {
     }
 
     // Game loop
-    boolean running = true;
     Player winningPlayer = null;
     int playerIndex = 0;
     int opponentIndex = 1;
 
-    boolean sameTurn = false;
-    String lastResult = "";
-    String cardVsStr = "";
+    boolean running = true;
     while (running) {
+      boolean sameTurn = false;
+      boolean discardedThisTurn = false;
+      String lastResult = "";
+      String moveIndicator = "";
+      String cardVsStr = "";
+
       Player player = players.get(playerIndex);
       Player opponent = players.get(opponentIndex);
 
@@ -124,16 +134,18 @@ public class ScrimishTerminal {
         clearScreen();
         System.out.println("LAST TURN:");
         System.out.println(lastResult);
-        System.out.println(cardVsStr);
+        System.out.println(cardVsStr + "\n");
         // Show hidden opponents cards
         System.out.println(opponent.toStringHidden());
+        System.out.println(moveIndicator);
         // Show own cards
         System.out.println(player.toString());
       }
       // Get player choice
       int ownStack;
       int otherStack;
-      System.out.println("Pick one of your own stacks (1 - 5) and one of the opponents (1 - 5)");
+      System.out.println(
+          "\nPick one of your own stacks (1 - 5) and one of the opponents (1 - 5), discard (d) a card, or quit (q)");
       System.out.print("> ");
       String ownStackStr = sc.next();
       // Player wants to exit
@@ -144,66 +156,79 @@ public class ScrimishTerminal {
       // Consume the newline char
       sc.nextLine();
       if (ownStackStr.equals("d")) {
-        System.out.println("Discarding not implemented yet sorry (>_<)");
-        sameTurn = true;
-        continue;
-      }
-      try {
-        ownStack = Integer.parseInt(ownStackStr) - 1;
-        otherStack = Integer.parseInt(otherStackStr) - 1;
-      } catch (Exception e) {
-        System.out.println("Not a valid stack index");
-        sameTurn = true;
-        continue;
-      }
-      // Check result
-      Card ownCard;
-      Card oppCard;
-      try {
-        ownCard = player.getBoard().peekCard(ownStack);
-        oppCard = opponent.getBoard().peekCard(otherStack);
-        if (ownCard.getCardType() == CardType.SHIELD) {
-          System.out.println("Cannot attack with shield card");
+        // System.out.println("Discarding not implemented yet sorry (>_<)");
+        // sameTurn = true;
+        // continue;
+        int discardStack;
+        try {
+          discardStack = Integer.parseInt(otherStackStr) - 1;
+        } catch (Exception e) {
+          System.out.println("Not a valid stack index");
           sameTurn = true;
           continue;
         }
-      } catch (NoSuchElementException e) {
-        System.out.println("One or both stacks is empty");
-        sameTurn = true;
-        continue;
-      } catch (Exception e) {
-        System.out.println("Column number out of range");
-        sameTurn = true;
-        continue;
-      }
-      cardVsStr = cardVsCardToString(ownCard, oppCard);
-      System.out.println(cardVsStr);
-      var result = ownCard.strongerThan(oppCard);
-      switch (result) {
-        case AttackResult.WIN:
-          lastResult = "WIN: " + ownCard.getCardName() + " beats " + oppCard.getCardName();
-          if (opponent.getBoard().discard(otherStack).isCrownCard()) {
-            winningPlayer = player;
+        player.getBoard().discard(discardStack);
+        lastResult = "Discarded card from stack " + otherStackStr;
+        discardedThisTurn = true;
+      } else {
+
+        try {
+          ownStack = Integer.parseInt(ownStackStr) - 1;
+          otherStack = Integer.parseInt(otherStackStr) - 1;
+        } catch (Exception e) {
+          System.out.println("Not a valid stack index");
+          sameTurn = true;
+          continue;
+        }
+        // Check result
+        Card ownCard;
+        Card oppCard;
+        try {
+          ownCard = player.getBoard().peekCard(ownStack);
+          oppCard = opponent.getBoard().peekCard(otherStack);
+          if (ownCard.getCardType() == CardType.SHIELD) {
+            System.out.println("Cannot attack with shield card");
+            sameTurn = true;
+            continue;
           }
-          break;
-        case AttackResult.LOSE:
-          lastResult = "LOSE: " + oppCard.getCardName() + " beats " + ownCard.getCardName();
-          if (player.getBoard().discard(ownStack).isCrownCard()) {
-            winningPlayer = opponent;
-          }
-          break;
-        case AttackResult.EQUAL:
-          lastResult = "EQUAL: Both " + ownCard.getCardName() + " and " + oppCard.getCardName() + " are discarded";
-          if (opponent.getBoard().discard(otherStack).isCrownCard()) {
-            winningPlayer = player;
-          } else if (player.getBoard().discard(ownStack).isCrownCard()) {
-            winningPlayer = opponent;
-          }
-          break;
-        case AttackResult.BOUNCE:
-          lastResult = "BOUNCE: Both " + ownCard.getCardName() + " and " + ownCard.getCardName()
-              + " are returned to their piles";
-          break;
+        } catch (NoSuchElementException e) {
+          System.out.println("One or both stacks is empty");
+          sameTurn = true;
+          continue;
+        } catch (Exception e) {
+          System.out.println("Column number out of range");
+          sameTurn = true;
+          continue;
+        }
+        cardVsStr = cardVsCardToString(ownCard, oppCard);
+        System.out.println(cardVsStr);
+        var result = ownCard.strongerThan(oppCard);
+        switch (result) {
+          case AttackResult.WIN:
+            lastResult = "WIN: " + ownCard.getCardName() + " beats " + oppCard.getCardName();
+            if (opponent.getBoard().discard(otherStack).isCrownCard()) {
+              winningPlayer = player;
+            }
+            break;
+          case AttackResult.LOSE:
+            lastResult = "LOSE: " + oppCard.getCardName() + " beats " + ownCard.getCardName();
+            if (player.getBoard().discard(ownStack).isCrownCard()) {
+              winningPlayer = opponent;
+            }
+            break;
+          case AttackResult.EQUAL:
+            lastResult = "EQUAL: Both " + ownCard.getCardName() + " and " + oppCard.getCardName() + " are discarded";
+            if (opponent.getBoard().discard(otherStack).isCrownCard()) {
+              winningPlayer = player;
+            } else if (player.getBoard().discard(ownStack).isCrownCard()) {
+              winningPlayer = opponent;
+            }
+            break;
+          case AttackResult.BOUNCE:
+            lastResult = "BOUNCE: Both " + ownCard.getCardName() + " and " + ownCard.getCardName()
+                + " are returned to their piles";
+            break;
+        }
       }
       // Check win
       if (winningPlayer != null) {
@@ -211,8 +236,11 @@ public class ScrimishTerminal {
             + ColorTerminal.setColorToDefault());
         break;
       }
-      System.out.println(lastResult);
-      cardVsStr = ownStackStr + " vs " + otherStackStr + "\n" + cardVsStr;
+      if (!discardedThisTurn) {
+        System.out.println(lastResult);
+        cardVsStr = ownStackStr + " vs " + otherStackStr + "\n" + cardVsStr;
+        moveIndicator = getLastMoveIndicator(Integer.parseInt(otherStackStr), Integer.parseInt(ownStackStr));
+      }
       System.out.println("Press ENTER to end your turn");
       sc.nextLine();
       // switch players
